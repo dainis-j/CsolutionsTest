@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CsolutionsTest.Data.Models.Product>
+﻿@model IEnumerable<ProductViewModel>
 
 @{
     ViewData["Title"] = "Products";
@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Units)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PriceWithVat)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -35,6 +38,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Units)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PriceWithVat)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

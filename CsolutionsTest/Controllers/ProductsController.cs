@@ -4,6 +4,7 @@ using CsolutionsTest.Data;
 using CsolutionsTest.Data.Models;
 using CsolutionsTest.Data.Enums;
 using System.Text.Json;
+using CsolutionsTest.Models;
 
 namespace CsolutionsTest.Controllers
 {
@@ -19,9 +20,20 @@ namespace CsolutionsTest.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-              return _context.Product != null ? 
-                          View(await _context.Product.ToListAsync()) :
-                          Problem("Entity set 'TestDbContext.Product'  is null.");
+            if (_context.Product == null)
+                return Problem("Entity set 'TestDbContext.Product'  is null.");
+
+            var products = await _context.Product
+                .Select(p => new ProductViewModel()
+                {
+                    Name = p.Name,
+                    Id = p.Id,
+                    Units = p.Units,
+                    Price = p.Price
+                })
+                .ToListAsync();
+
+            return View(products);
         }
 
         // GET: Products/Details/5
