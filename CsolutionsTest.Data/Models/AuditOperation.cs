@@ -10,7 +10,7 @@ namespace CsolutionsTest.Data.Models
 
         public AuditOperationType Type { get; set; }
 
-        public DateTime Date;
+        public DateTime Date { get; set; }
 
         /// <summary>
         /// Gets or sets the operation payload, such as the modified object's ID.

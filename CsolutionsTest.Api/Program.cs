@@ -14,23 +14,32 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.MapGet("/audit", (TestDbContext dbContext, DateTime? from, DateTime? to) =>
+app.MapGet("/audit", GetAuditOperations);
+
+/// <summary>
+/// Gets the latest audit operations from the database.
+/// </summary>
+/// <param name="dbContext">The database context.</param>
+/// <param name="from">Minimum operation date.</param>
+/// <param name="to">Maximum operation date.</param>
+static List<AuditOperation> GetAuditOperations(TestDbContext dbContext, DateTime? from, DateTime? to)
 {
+
     if (dbContext.AuditOperations == null)
     {
         throw new ArgumentNullException($"Table {nameof(dbContext.AuditOperations)} hasn't been loaded.");
     }
 
-    List<AuditOperation> result = dbContext.AuditOperations
+    var query = dbContext.AuditOperations
+        .Where(ao => !from.HasValue || ao.Date >= from)
+        .Where(ao => !to.HasValue || ao.Date >= to)
+        .OrderByDescending(ao => ao.Date);
 
-        // Normally we wouldn't load the entire audit in memory but otherwise
-        // OrderByDescending doesn't work. Possible issue with SQLite
-        .ToList() 
+    // Only take top 10 records if no filters provided
+    if (!from.HasValue && !to.HasValue)
+        query = (IOrderedQueryable<AuditOperation>)query.Take(10);
 
-        .OrderByDescending(ao => ao.Date)
-        .ToList();
-
-    return result;
-});
+    return query.ToList();
+}
 
 app.Run();

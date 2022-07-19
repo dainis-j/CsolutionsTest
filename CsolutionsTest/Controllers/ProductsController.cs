@@ -57,6 +57,12 @@ namespace CsolutionsTest.Controllers
         {
             if (ModelState.IsValid)
             {
+                _context.Add(product);
+
+                await _context.SaveChangesAsync();
+
+                // Have to create audit operation after saving, otherwise
+                // the new product's ID won't have been generated
                 _context.Add(new AuditOperation()
                 {
                     Date = DateTime.UtcNow,
@@ -67,8 +73,6 @@ namespace CsolutionsTest.Controllers
                         product.Id
                     })
                 });
-
-                _context.Add(product);
 
                 await _context.SaveChangesAsync();
 
