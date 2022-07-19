@@ -8,7 +8,7 @@ namespace CsolutionsTest.Data
         public TestDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<TestDbContext>();
-            optionsBuilder.UseSqlite("Data Source=CsolutionsTest.db");
+            optionsBuilder.UseSqlite("Data Source=../CsolutionsTest.db");
 
             return new TestDbContext(optionsBuilder.Options);
         }
